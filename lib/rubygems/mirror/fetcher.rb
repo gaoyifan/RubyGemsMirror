@@ -44,10 +44,12 @@ class Gem::Mirror::Fetcher
   def write_file(resp, path)
     body = resp.body
     return false if resp.body.length == 0
-    FileUtils.mkdir_p File.dirname(path)
-    File.open(path, 'wb') do |output|
+    path_tmpfs = path + '.tmprs'
+    FileUtils.mkdir_p File.dirname(path_tmpfs)
+    File.open(path_tmpfs, 'wb') do |output|
       output << body
     end
+    FileUtils.mv path_tmpfs, path
     body = nil
     true
   ensure
